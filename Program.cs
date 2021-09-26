@@ -11,151 +11,8 @@ namespace Blackjack
 			//Choix Nom
 			Console.Write("Choose your name, human. ");
 			string nom = Console.ReadLine();
-			
-			//Initialisation cartes de jeu
-			Dictionary<string, int> dict = new Dictionary<string, int>()
-			{
-				{ "1",1},{"2",2},{"3",3},{"4",4},{"5",5},{"6",6},{"7",7},
-				{"8",8},{"9",9},{"10",10},{"V",10},{"D",10},{"R",10},
-			};
-			List<string> joueurH = new List<string>();
-			List<string> joueurO = new List<string>();
-			List<string> paquet = new List<string>();
 
-			//Choix nombre de paquets
-			Console.Write("\nHow many deck do you desire ? ");
-			string input = Console.ReadLine();
-			int nbPaquet;
-			while(!int.TryParse(input, out nbPaquet) || nbPaquet <= 0)
-            {
-				Console.WriteLine("\nPlease choose a whole number strictly above 0.");
-				Console.Write("How many deck do you desire ? ");
-				input = Console.ReadLine();
-            }
-
-			Console.Write("If you want to play in hard mode, enter h else just press enter. ");
-			input = Console.ReadLine();
-			bool hard = (input == "h");
-
-			Console.Clear();
-			int[] score = new int[2];
-
-			//Génération du paquet de cartes
-			foreach(string carte in dict.Keys)
-			{
-				paquet.AddRange(Enumerable.Repeat(carte, nbPaquet * 4));
-			}
-			paquet = paquet.OrderBy(x => Guid.NewGuid()).ToList();
-			int rangDerniereCarte = paquet.Count()-1;
-
-			//Distribution des cartes
-			for(int loop = 0; loop < 2; loop++)
-			{
-				rangDerniereCarte = DistributionCarte(joueurH, paquet, rangDerniereCarte);
-			}
-			for(int loop = 0; loop < 2; loop++)
-			{
-				rangDerniereCarte = DistributionCarte(joueurO, paquet, rangDerniereCarte);
-			}
-
-			score = AffichageJeux(joueurH, joueurO, dict, nom);
-
-			bool stopJoueur, stopOrdinateur, finPartie; stopJoueur = stopOrdinateur = finPartie = false;
-			while(!finPartie)
-			{
-				//Tour Joueur---------------------------------------------------------------------
-				if(!stopJoueur)
-				{
-					//Décision Joueur
-					Console.WriteLine("Voulez-vous piocher une nouvelle carte ?");
-					Console.WriteLine("o - Oui");
-					Console.WriteLine("n - Non");
-					string choixJoueur = Console.ReadLine();
-					if(choixJoueur == "o")
-					{
-						rangDerniereCarte = DistributionCarte(joueurH, paquet, rangDerniereCarte);
-						Console.WriteLine($"\n{nom} : pioche une carte");
-					}
-					else
-					{
-						Console.WriteLine($"\n{nom} : s'arrête là.");
-						stopJoueur = true;
-					}
-				}
-
-				//Tour Ordinateur------------------------------------------------------------------
-				if (!stopOrdinateur)
-				{
-					if (hard)
-					{
-						if(score[0] <= 21 && (score[1] < score[0] || score[1] < 15))
-                        {
-							rangDerniereCarte = OrdinateurPiocheCarte(rangDerniereCarte, joueurO, paquet);
-                        }
-                        else
-                        {
-							stopOrdinateur =  OrdinateurArretCarte();
-                        }
-					}
-					else
-                    {
-						if (score[1] <= 15 && score[0] <= 21)
-						{
-							rangDerniereCarte = OrdinateurPiocheCarte(rangDerniereCarte, joueurO, paquet);
-						}
-						else
-						{
-							stopOrdinateur = OrdinateurArretCarte();
-						}
-					}
-				}
-
-				Console.Write("\nPress enter to flip the cards\n");
-				Console.ReadLine();
-				Console.Clear();
-
-				//Affichage des jeux
-				score = AffichageJeux(joueurH, joueurO, dict, nom);
-
-				//Fin de partie
-				finPartie = (stopOrdinateur && stopJoueur) || (score[1] >= 21 || score[0] >= 21);
-			}
-
-			//mettre truc pour bloquer resultats jusqu'à enter
-			Console.WriteLine("The game is over, press enter to display the results.");
-			Console.ReadLine();
-			Console.Clear();
-
-			//Affichage final en fonction du vainqueur/de la victorieuse
-			if(score[1] == 21)
-			{
-				Console.WriteLine("Blackjack de l'ordinateur !");
-			}
-			else if(score[0] == 21)
-			{
-				Console.WriteLine($"Blackjack de {nom}");
-			}
-			else if(score[1] > 21)
-			{
-				Console.WriteLine($"L'ordinateur a dépassé 21 avec {score[1]} pts");
-			}
-			else if(score[0] > 21)
-			{
-				Console.WriteLine($"{nom} a dépassé 21 avec {score[0]} pts");
-			}
-			else if(score[1] > score[0])
-			{
-				Console.WriteLine($"Victoire de l'ordinateur avec {score[1]} pts devant {score[0]} pts");
-			}
-			else if(score[1] < score[0])
-			{
-				Console.WriteLine($"Victoire de {nom} avec {score[0]} pts devant {score[1]} pts");
-			}
-			else
-			{
-				Console.WriteLine($"Egalité de {score[0]} pts");
-			}
-			Console.ReadLine();
+			Update(nom);
 		}
 
 		static int[] AffichageJeux(List<string> joueurH, List<string> joueurO, Dictionary<string,int> dict, string nom)
@@ -228,5 +85,158 @@ namespace Blackjack
 			Console.WriteLine("Ordinateur : s'arrête là.");
 			return true;
         }
+		static void Update(string nom)
+        {
+			//Initialisation cartes de jeu
+			Dictionary<string, int> dict = new Dictionary<string, int>()
+			{
+				{ "1",1},{"2",2},{"3",3},{"4",4},{"5",5},{"6",6},{"7",7},
+				{"8",8},{"9",9},{"10",10},{"V",10},{"D",10},{"R",10},
+			};
+			List<string> joueurH = new List<string>();
+			List<string> joueurO = new List<string>();
+			List<string> paquet = new List<string>();
+
+			//Choix nombre de paquets
+			Console.Write("\nHow many deck do you desire ? ");
+			string input = Console.ReadLine();
+			int nbPaquet;
+			while (!int.TryParse(input, out nbPaquet) || nbPaquet <= 0)
+			{
+				Console.WriteLine("\nPlease choose a whole number strictly above 0.");
+				Console.Write("How many deck do you desire ? ");
+				input = Console.ReadLine();
+			}
+
+			Console.Write("If you want to play in hard mode, enter h else just press enter. ");
+			input = Console.ReadLine();
+			bool hard = (input == "h");
+
+			Console.Clear();
+			int[] score = new int[2];
+
+			//Génération du paquet de cartes
+			foreach (string carte in dict.Keys)
+			{
+				paquet.AddRange(Enumerable.Repeat(carte, nbPaquet * 4));
+			}
+			paquet = paquet.OrderBy(x => Guid.NewGuid()).ToList();
+			int rangDerniereCarte = paquet.Count() - 1;
+
+			//Distribution des cartes
+			for (int loop = 0; loop < 2; loop++)
+			{
+				rangDerniereCarte = DistributionCarte(joueurH, paquet, rangDerniereCarte);
+			}
+			for (int loop = 0; loop < 2; loop++)
+			{
+				rangDerniereCarte = DistributionCarte(joueurO, paquet, rangDerniereCarte);
+			}
+
+			score = AffichageJeux(joueurH, joueurO, dict, nom);
+
+			bool stopJoueur, stopOrdinateur, finPartie; stopJoueur = stopOrdinateur = finPartie = false;
+			while (!finPartie)
+			{
+				//Tour Joueur---------------------------------------------------------------------
+				if (!stopJoueur)
+				{
+					//Décision Joueur
+					Console.WriteLine("Do you want to pick a new card ?");
+					Console.WriteLine("y - Yes");
+					Console.WriteLine("n - No");
+					string choixJoueur = Console.ReadLine();
+					if (choixJoueur == "o")
+					{
+						rangDerniereCarte = DistributionCarte(joueurH, paquet, rangDerniereCarte);
+						Console.WriteLine($"\n{nom} : picks a card");
+					}
+					else
+					{
+						Console.WriteLine($"\n{nom} : stops there.");
+						stopJoueur = true;
+					}
+				}
+
+				//Tour Ordinateur------------------------------------------------------------------
+				if (!stopOrdinateur)
+				{
+					if (hard)
+					{
+						if (score[0] <= 21 && (score[1] < score[0] || (!stopJoueur && score[1] < 15)))
+						{
+							rangDerniereCarte = OrdinateurPiocheCarte(rangDerniereCarte, joueurO, paquet);
+						}
+						else
+						{
+							stopOrdinateur = OrdinateurArretCarte();
+						}
+					}
+					else
+					{
+						if (score[1] <= 15 && score[0] <= 21)
+						{
+							rangDerniereCarte = OrdinateurPiocheCarte(rangDerniereCarte, joueurO, paquet);
+						}
+						else
+						{
+							stopOrdinateur = OrdinateurArretCarte();
+						}
+					}
+				}
+
+				Console.Write("\nPress enter to flip the cards\n");
+				Console.ReadLine();
+				Console.Clear();
+
+				//Affichage des jeux
+				score = AffichageJeux(joueurH, joueurO, dict, nom);
+
+				//Fin de partie
+				finPartie = (stopOrdinateur && stopJoueur) || (score[1] >= 21 || score[0] >= 21);
+			}
+
+			//mettre truc pour bloquer resultats jusqu'à enter
+			Console.WriteLine("The game is over, press enter to display the results.");
+			Console.ReadLine();
+			Console.Clear();
+
+			//Affichage final en fonction du vainqueur/de la victorieuse
+			if (score[0] == 21)
+			{
+				Console.WriteLine($"Blackjack from {nom}");
+			}
+			else if (score[1] == 21)
+			{
+				Console.WriteLine("Blackjack from the IA!");
+			}
+			else if (score[1] > 21)
+			{
+				Console.WriteLine($"The IA is beyond 21 with {score[1]} pts");
+			}
+			else if (score[0] > 21)
+			{
+				Console.WriteLine($"{nom} is beyond 21 with {score[0]} pts");
+			}
+			else if (score[1] > score[0])
+			{
+				Console.WriteLine($"Win of the IA with {score[1]} pts beyond {nom}'s {score[0]} pts");
+			}
+			else if (score[1] < score[0])
+			{
+				Console.WriteLine($"Win of {nom} with {score[0]} pts beyond IA's {score[1]} pts");
+			}
+			else
+			{
+				Console.WriteLine($"Equality {score[0]} pts");
+			}
+
+			Console.Write("\nDo you want to replay ? y/n");
+			input = Console.ReadLine();
+			if (input == "y")
+            {
+				Update(nom);
+            }
+		}
 	}
 }
