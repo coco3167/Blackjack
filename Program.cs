@@ -11,6 +11,7 @@ namespace Blackjack
 			//Choix Nom
 			Console.Write("Choose your name, human. ");
 			string nom = Console.ReadLine();
+			Console.WriteLine();
 
 			Update(nom);
 		}
@@ -77,12 +78,12 @@ namespace Blackjack
 		}
 		static int OrdinateurPiocheCarte(int rangDerniereCarte, List<string> joueurO, List<string> paquet)
         {
-			Console.WriteLine("Ordinateur : pioche une carte.");
+			Console.WriteLine("IA : picks a card.");
 			return DistributionCarte(joueurO, paquet, rangDerniereCarte);
 		}
 		static bool OrdinateurArretCarte()
         {
-			Console.WriteLine("Ordinateur : s'arrête là.");
+			Console.WriteLine("IA : stops there.");
 			return true;
         }
 		static void Update(string nom)
@@ -98,7 +99,7 @@ namespace Blackjack
 			List<string> paquet = new List<string>();
 
 			//Choix nombre de paquets
-			Console.Write("\nHow many deck do you desire ? ");
+			Console.Write("How many deck do you desire ? ");
 			string input = Console.ReadLine();
 			int nbPaquet;
 			while (!int.TryParse(input, out nbPaquet) || nbPaquet <= 0)
@@ -146,7 +147,7 @@ namespace Blackjack
 					Console.WriteLine("y - Yes");
 					Console.WriteLine("n - No");
 					string choixJoueur = Console.ReadLine();
-					if (choixJoueur == "o")
+					if (choixJoueur == "y")
 					{
 						rangDerniereCarte = DistributionCarte(joueurH, paquet, rangDerniereCarte);
 						Console.WriteLine($"\n{nom} : picks a card");
@@ -231,10 +232,11 @@ namespace Blackjack
 				Console.WriteLine($"Equality {score[0]} pts");
 			}
 
-			Console.Write("\nDo you want to replay ? y/n");
+			Console.Write("\nDo you want to replay ? y/n : ");
 			input = Console.ReadLine();
 			if (input == "y")
             {
+				Console.Clear();
 				Update(nom);
             }
 		}
