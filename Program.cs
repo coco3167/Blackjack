@@ -155,6 +155,7 @@ namespace Blackjack
 			{
 				Console.WriteLine($"Egalité de {score[0]} pts");
 			}
+			Console.ReadLine();
 		}
 
 		static int[] AffichageJeux(List<string> joueurH, List<string> joueurO, Dictionary<string,int> dict, string nom)
